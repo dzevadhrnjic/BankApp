@@ -1,6 +1,6 @@
-﻿using BankApp.Model;
+﻿using BankApp.Users.Models;
 
-namespace BankApp.Services
+namespace BankApp.Users.Services
 {
     public interface ILoginService
     {

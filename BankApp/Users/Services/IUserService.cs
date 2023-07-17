@@ -1,8 +1,6 @@
-﻿using BankApp.Model;
-using BankApp.Model.DTO;
-using BankApp.Models;
+﻿using BankApp.Users.Models;
 
-namespace BankApp.Services
+namespace BankApp.Users.Services
 {
     public interface IUserService
     {

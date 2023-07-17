@@ -1,9 +1,9 @@
-﻿using BankApp.Data;
-using BankApp.Exceptions;
-using BankApp.Model;
-using BankApp.Utils;
+﻿using BankApp.Users.Data;
+using BankApp.Users.Exceptions;
+using BankApp.Users.Models;
+using BankApp.Users.Utils;
 
-namespace BankApp.Services
+namespace BankApp.Users.Services
 {
     public class LoginService : ILoginService
     {

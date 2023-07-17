@@ -1,12 +1,9 @@
-﻿using BankApp.Data;
-using BankApp.Exceptions;
-using BankApp.Model;
-using BankApp.Model.DTO;
-using BankApp.Models;
-using BankApp.Utils;
-using BankApp.Validations;
+﻿using BankApp.Users.Data;
+using BankApp.Users.Exceptions;
+using BankApp.Users.Models;
+using BankApp.Users.Utils;
 
-namespace BankApp.Services
+namespace BankApp.Users.Services
 {
     public class UserService : IUserService
     {
@@ -53,10 +50,10 @@ namespace BankApp.Services
             _userContext.Users.Add(user);
             _userContext.SaveChanges();
 
-            emailService.SendEmail(user.Email, "Bank Application ", 
+            emailService.SendEmail(user.Email, "Bank Application ",
                 "Welcome to bank " + user.FirstName + ", Code : " + emailService.GetRandomNumbers());
 
-            user.Password = String.Empty;
+            user.Password = string.Empty;
 
             return user;
         }
@@ -65,7 +62,7 @@ namespace BankApp.Services
         {
             var user = GetById(id);
 
-            if (user == null) 
+            if (user == null)
             {
                 throw new UserNotFoundException("No user with that id");
             }

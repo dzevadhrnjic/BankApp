@@ -1,5 +1,5 @@
-using BankApp.Data;
-using BankApp.Services;
+using BankApp.Users.Data;
+using BankApp.Users.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

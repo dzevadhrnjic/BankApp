@@ -1,4 +1,4 @@
-﻿namespace BankApp.Services
+﻿namespace BankApp.Users.Services
 {
     public interface IEmailService
     {

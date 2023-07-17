@@ -1,4 +1,4 @@
-﻿namespace BankApp.Exceptions
+﻿namespace BankApp.Users.Exceptions
 {
     public class InvalidEmailOrPasswordException : Exception
     {

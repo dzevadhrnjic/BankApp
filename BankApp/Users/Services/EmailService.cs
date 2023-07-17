@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
 
-namespace BankApp.Services
+namespace BankApp.Users.Services
 {
     public class EmailService : IEmailService
     {
@@ -37,10 +37,10 @@ namespace BankApp.Services
         {
             Random random = new Random();
 
-            String numbers = random.Next(0, 1000000).ToString("D6");
+            string numbers = random.Next(0, 1000000).ToString("D6");
 
             return numbers;
-          
+
         }
     }
 }

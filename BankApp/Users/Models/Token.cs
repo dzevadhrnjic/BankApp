@@ -1,4 +1,4 @@
-﻿namespace BankApp.Model
+﻿namespace BankApp.Users.Models
 {
     public class Token
     {

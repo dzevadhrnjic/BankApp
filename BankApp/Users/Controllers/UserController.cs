@@ -1,11 +1,10 @@
-﻿using BankApp.Exceptions;
-using BankApp.Model;
-using BankApp.Model.DTO;
-using BankApp.Models;
-using BankApp.Services;
+﻿using BankApp.Users.Exceptions;
+using BankApp.Users.Models;
+using BankApp.Users.Models.DTO;
+using BankApp.Users.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BankApp.Controllers
+namespace BankApp.Users.Controllers
 {
     [ApiController]
     [Route("api/users")]
@@ -88,12 +87,14 @@ namespace BankApp.Controllers
         {
             try
             {
-                var updateUser =_userService.UpdateUser(id, user);
+                var updateUser = _userService.UpdateUser(id, user);
                 return NoContent();
-            }catch(UserNotFoundException e)
+            }
+            catch (UserNotFoundException e)
             {
                 return NotFound(e.Message);
-            }catch(ValidationException e)
+            }
+            catch (ValidationException e)
             {
                 return BadRequest(e.Message);
             }
@@ -108,9 +109,10 @@ namespace BankApp.Controllers
             {
                 var login = _loginService.Login(userLogin);
                 return Ok(login);
-            }catch(InvalidEmailOrPasswordException e) 
-            { 
-            return BadRequest(e.Message);
+            }
+            catch (InvalidEmailOrPasswordException e)
+            {
+                return BadRequest(e.Message);
             }
         }
     }

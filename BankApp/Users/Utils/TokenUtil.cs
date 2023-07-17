@@ -1,13 +1,8 @@
-﻿
-
-using BankApp.Models;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
 
-namespace BankApp.Utils
+namespace BankApp.Users.Utils
 {
     public class TokenUtil
     {
@@ -37,7 +32,7 @@ namespace BankApp.Utils
                 ValidateAudience = false
             }, out SecurityToken validatedToken);
 
-            return (JwtSecurityToken) validatedToken;
+            return (JwtSecurityToken)validatedToken;
         }
     }
 }

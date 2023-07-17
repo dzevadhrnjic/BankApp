@@ -1,4 +1,4 @@
-﻿namespace BankApp.Model.DTO
+﻿namespace BankApp.Users.Models.DTO
 {
     public class UserDTO
     {
