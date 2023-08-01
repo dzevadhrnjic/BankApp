@@ -8,13 +8,14 @@ namespace BankApp.Users.Services
     public class LoginService : ILoginService
     {
         HashUtils hashUtils = new HashUtils();
-        TokenUtil tokenUtil = new TokenUtil();
 
         private readonly UserDbContext _userContext;
+        private readonly TokenUtil _tokenUtil;
 
-        public LoginService(UserDbContext userDbContext)
+        public LoginService(UserDbContext userDbContext, TokenUtil tokenUtil)
         {
             _userContext = userDbContext;
+            _tokenUtil = tokenUtil;
         }
 
         public Token Login(UserLogin userLogin)
@@ -31,7 +32,7 @@ namespace BankApp.Users.Services
             else
             {
                 int userId = loginUser.Id;
-                token.UserToken(tokenUtil.GenerateJWT(userId));
+                token.UserToken(_tokenUtil.GenerateJWT(userId));
             }
 
             return token;

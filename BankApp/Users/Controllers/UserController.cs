@@ -1,4 +1,10 @@
-﻿using BankApp.Users.Exceptions;
+﻿using BankApp.Blacklist.Exceptions;
+using BankApp.ChangePassword.Models;
+using BankApp.ChangePassword.Services;
+using BankApp.EmailVerification.Exceptions;
+using BankApp.EmailVerification.Models.DTO;
+using BankApp.EmailVerification.Services;
+using BankApp.Users.Exceptions;
 using BankApp.Users.Models;
 using BankApp.Users.Models.DTO;
 using BankApp.Users.Services;
@@ -13,11 +19,16 @@ namespace BankApp.Users.Controllers
 
         private readonly IUserService _userService;
         private readonly ILoginService _loginService;
+        private readonly IVerificationService _verificationService;
+        private readonly IChangePasswordService _changePasswordService;
 
-        public UserController(IUserService userService, ILoginService loginService)
+        public UserController(IUserService userService, ILoginService loginService,
+            IVerificationService verificationService, IChangePasswordService changePasswordService)
         {
             _userService = userService;
             _loginService = loginService;
+            _verificationService = verificationService;
+            _changePasswordService = changePasswordService;
         }
 
         [HttpGet]
@@ -46,11 +57,11 @@ namespace BankApp.Users.Controllers
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<User> CreateUser(User user)
+        public ActionResult<UserDTO> CreateUser(UserDTO userDto)
         {
             try
             {
-                var createUser = _userService.CreateUser(user);
+                var createUser = _userService.CreateUser(userDto);
                 return Created("", createUser);
             }
             catch (ValidationException e)
@@ -76,6 +87,9 @@ namespace BankApp.Users.Controllers
             catch (UserNotFoundException e)
             {
                 return NotFound(e.Message);
+            }catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
 
@@ -83,11 +97,11 @@ namespace BankApp.Users.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<User> UpdateUser(int id, User user)
+        public ActionResult<UserDTO> UpdateUser(int id, UserDTO userDto)
         {
             try
             {
-                var updateUser = _userService.UpdateUser(id, user);
+                var updateUser = _userService.UpdateUser(id, userDto);
                 return NoContent();
             }
             catch (UserNotFoundException e)
@@ -111,6 +125,57 @@ namespace BankApp.Users.Controllers
                 return Ok(login);
             }
             catch (InvalidEmailOrPasswordException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("verifyEmail")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<VerificationDTO> VerifyEmail(VerificationDTO verificationDTO)
+        {
+            try
+            {
+                var result = _verificationService.VerifyEmail(verificationDTO);
+                return Ok(result);
+            }catch (EmailVerificationException e)
+            {
+                return BadRequest(e.Message);
+            }catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("changePassword")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult ChangePassword(string token)
+        {
+            try
+            {
+                _changePasswordService.PasswordChange(token);
+                return Ok();
+            }catch (BlacklistTokenException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("newPassword")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<PasswordChange> NewPassword(string token, PasswordChange passwordChange)
+        {
+            try
+            {
+                var result = _changePasswordService.NewPassword(token, passwordChange);
+                return Ok(result);
+            }
+            catch (Exception e) when (
+                e is InvalidEmailOrPasswordException ||
+                e is BlacklistTokenException)
             {
                 return BadRequest(e.Message);
             }

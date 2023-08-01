@@ -1,38 +1,56 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using BankApp.Blacklist.Services;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 namespace BankApp.Users.Utils
 {
     public class TokenUtil
     {
-        private string secureKey = "this is my security key";
-        public string GenerateJWT(int userId)
+        private readonly IBlacklistService _blacklistService;
+        public TokenUtil(IBlacklistService blacklistService) 
         {
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secureKey));
-            var credentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
-            var header = new JwtHeader(credentials);
-
-            var payload = new JwtPayload(userId.ToString(), null, null, null, DateTime.UtcNow.AddDays(1));
-            var securityToken = new JwtSecurityToken(header, payload);
-
-            return new JwtSecurityTokenHandler().WriteToken(securityToken);
+            _blacklistService = blacklistService;
         }
 
-        public JwtSecurityToken VerifyToken(string jwt)
+        private string secureKey = "this is my security key";
+        
+        public string GenerateJWT(int userId)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenHanlder = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(secureKey);
-
-            tokenHandler.ValidateToken(jwt, new TokenValidationParameters
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                IssuerSigningKey = new SymmetricSecurityKey(key),
+                Subject = new ClaimsIdentity(new[] { new Claim("id", userId.ToString()) }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+            };
+
+            var token = tokenHanlder.CreateToken(tokenDescriptor);
+            return tokenHanlder.WriteToken(token);
+        }
+
+        public int VerifyToken(string token)
+        {
+            _blacklistService.BlacklistToken(token);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(secureKey);
+
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
                 ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = false,
-                ValidateAudience = false
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
             }, out SecurityToken validatedToken);
 
-            return (JwtSecurityToken)validatedToken;
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+
+            return userId;
         }
     }
 }

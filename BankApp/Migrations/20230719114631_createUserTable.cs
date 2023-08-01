@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace BankApp.Migrations
 {
     /// <inheritdoc />
@@ -33,20 +31,40 @@ namespace BankApp.Migrations
                     table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "Id", "Address", "CreatedAt", "Email", "FirstName", "LastName", "Password", "PhoneNumber", "VerifyEmail" },
-                values: new object[,]
+            migrationBuilder.CreateTable(
+                name: "Accounts",
+                columns: table => new
                 {
-                    { 1, "sfsff", new DateTime(2023, 7, 13, 14, 57, 5, 520, DateTimeKind.Local).AddTicks(9684), "Test", "Test", "Test", "Test", "Test", false },
-                    { 2, "sfsff", new DateTime(2023, 7, 13, 14, 57, 5, 520, DateTimeKind.Local).AddTicks(9716), "Test", "Test2", "Test2", "Test", "Test", false },
-                    { 3, "sfsff", new DateTime(2023, 7, 13, 14, 57, 5, 520, DateTimeKind.Local).AddTicks(9719), "Test", "Test3", "Test3", "Test", "Test", false }
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    IntialBalance = table.Column<double>(type: "float", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Accounts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Accounts_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Accounts_UserId",
+                table: "Accounts",
+                column: "UserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Accounts");
+
             migrationBuilder.DropTable(
                 name: "Users");
         }

@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using MimeKit;
+using System.Net;
 using System.Net.Mail;
+using System.Net.Mime;
 
 namespace BankApp.Users.Services
 {
@@ -13,6 +15,20 @@ namespace BankApp.Users.Services
             MailMessage message = new MailMessage(emailFrom, to);
             message.Subject = subject;
             message.Body = body;
+
+            CreateSMTPClient(message);
+        }
+
+        public void SendEmailWithAttachment(string to, string subject, string body)
+        {
+           
+            string file = "D:\\BankApp\\BankApp\\transactions.pdf";
+
+            MailMessage message = new MailMessage(emailFrom, to);
+            message.Subject = subject;
+
+            Attachment attachment = new Attachment(file, MediaTypeNames.Application.Octet);
+            message.Attachments.Add(attachment);
 
             CreateSMTPClient(message);
         }
@@ -40,7 +56,6 @@ namespace BankApp.Users.Services
             string numbers = random.Next(0, 1000000).ToString("D6");
 
             return numbers;
-
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BankApp.Users.Models;
+using BankApp.Users.Models.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace BankApp.Users.Data
@@ -7,8 +8,6 @@ namespace BankApp.Users.Data
     {
         public UserDbContext(DbContextOptions<UserDbContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
-
-
+        public DbSet<UserDTO> Users { get; set; }
     }
 }

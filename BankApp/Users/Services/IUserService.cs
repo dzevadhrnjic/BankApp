@@ -1,13 +1,14 @@
 ﻿using BankApp.Users.Models;
+using BankApp.Users.Models.DTO;
 
 namespace BankApp.Users.Services
 {
     public interface IUserService
     {
-        List<User> GetAllUsers(int pageSize, int pageNumber);
-        User GetById(int id);
-        User CreateUser(User user);
+        List<UserDTO> GetAllUsers(int pageSize, int pageNumber);
+        UserDTO GetById(int id);
+        UserDTO CreateUser(UserDTO userDto);
         void DeleteUser(int id);
-        User UpdateUser(int id, User user);
+        UserDTO UpdateUser(int id, UserDTO userDto);
     }
 }

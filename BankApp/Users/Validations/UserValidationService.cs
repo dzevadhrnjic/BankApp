@@ -7,7 +7,6 @@ namespace BankApp.Users.Validations
     {
         public static void UserFieldsValidation(User user)
         {
-
             ValidatePhoneNumber(user);
         }
         public static void ValidatePhoneNumber(User user)

@@ -22,7 +22,36 @@ namespace BankApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BankApp.Models.User", b =>
+            modelBuilder.Entity("BankApp.Accounts.Models.Account", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("IntialBalance")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Account", (string)null);
+                });
+
+            modelBuilder.Entity("BankApp.Users.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -67,45 +96,23 @@ namespace BankApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "sfsff",
-                            CreatedAt = new DateTime(2023, 7, 13, 14, 57, 5, 520, DateTimeKind.Local).AddTicks(9684),
-                            Email = "Test",
-                            FirstName = "Test",
-                            LastName = "Test",
-                            Password = "Test",
-                            PhoneNumber = "Test",
-                            VerifyEmail = false
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "sfsff",
-                            CreatedAt = new DateTime(2023, 7, 13, 14, 57, 5, 520, DateTimeKind.Local).AddTicks(9716),
-                            Email = "Test",
-                            FirstName = "Test2",
-                            LastName = "Test2",
-                            Password = "Test",
-                            PhoneNumber = "Test",
-                            VerifyEmail = false
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Address = "sfsff",
-                            CreatedAt = new DateTime(2023, 7, 13, 14, 57, 5, 520, DateTimeKind.Local).AddTicks(9719),
-                            Email = "Test",
-                            FirstName = "Test3",
-                            LastName = "Test3",
-                            Password = "Test",
-                            PhoneNumber = "Test",
-                            VerifyEmail = false
-                        });
+            modelBuilder.Entity("BankApp.Accounts.Models.Account", b =>
+                {
+                    b.HasOne("BankApp.Users.Models.User", "User")
+                        .WithMany("Accounts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BankApp.Users.Models.User", b =>
+                {
+                    b.Navigation("Accounts");
                 });
 #pragma warning restore 612, 618
         }

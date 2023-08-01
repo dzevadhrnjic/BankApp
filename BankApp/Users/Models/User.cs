@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BankApp.Accounts.Models;
+using BankApp.Transactions.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BankApp.Users.Models
@@ -22,7 +24,7 @@ namespace BankApp.Users.Models
         public string Address { get; set; }
 
         [Required]
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } 
 
         [Required]
         [MaxLength(50)]
@@ -33,5 +35,8 @@ namespace BankApp.Users.Models
         [MaxLength(50)]
         public string Password { get; set; }
         public bool VerifyEmail { get; set; }
+        public ICollection<Account> Accounts { get; set; }
+
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }
